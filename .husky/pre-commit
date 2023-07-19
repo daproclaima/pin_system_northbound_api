@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+source ../.env
+#docker-compose --env-file=../.env run --rm  pin_system_northbound_api mvn clean verify sonar:sonar -Dsonar.token= echo $SONAR_TOKEN
+#docker-compose --env-file=../.env run --rm  pin_system_northbound_api mvn checkstyle:check
+#docker-compose --env-file=../.env run --rm  pin_system_northbound_api mvn checkstyle:checkstyle
+
+docker-compose --env-file=../.env run --rm  pin_system_northbound_api mvn rewrite:run

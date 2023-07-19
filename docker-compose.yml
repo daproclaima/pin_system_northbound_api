@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  pin_system_northbound_api:
+    build:
+      context: .
+    container_name: northbound_api
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    volumes:
+      - .:/opt/app:rw,cached
+    healthcheck:
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    command: ['/bin/bash']
+#    environment:
