@@ -73,7 +73,8 @@ green.
 
 ### How to install it?
 1. First, you need to have installed a docker machine on your computer. You can use Docker Engine or Orbstack. 
-Then start the docker machine. To create and read the code, I used intelliJ. I use Insomnia to manually test the REST API.
+Then start the docker machine. To create and read the code, debug the code, I used intelliJ.
+
 2. Decide what directory you want to download the code from the code repository, open your command line interface, 
 go in the directory, and download the code with the following command in your command line interface:
 
@@ -114,6 +115,22 @@ java --version
 ./mvnw clean install
 ```
 
+## How to use it?
+
+### Start the spring boot server
+To start the server run `docker-compose run -p 8080:8080 pin_system_northbound_api ./mvnw spring-boot:run`. To exit the server, enter 'CTRL + C'.
+To start the server with debbug mode run 
+```shell
+docker-compose run -p 8080:8080 pin_system_northbound_api ./mvnw spring-boot:run -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8080"
+```
+
+### Requests to submit to the REST API endpoint
+You will find a file test file com/vodafoneziggotechcasescreening/com/pin_system_northbound_api/southbound/activationTerminal/ActivationTerminalControllerTest.java. 
+It contains the 3 requests to apply against the REST API server as integration tests. 
+The "create" request sends the [first request](#1-it-receives-the-body-customerid-12345-macaddress-aabbccddeeff).
+The "not found" request sends the [second request](#2-it-receives-the-body-customerid-12345-macaddress-aabbccddeeaa).
+The "conflict" request sends the [third request](#3-it-receives-the-body-customerid-11111-macaddress-aabbccddeeff).
+
 ### How to stop the project and remove it?
 Run the following docker commands in your computer CLI:
 ```shell
@@ -125,24 +142,11 @@ Find the container id of the pin_system_northbound_api_pin_system_northbound_api
 docker container rm <container_id>
 ```
 
-## How to use it?
-
-### Start the spring boot server
-To start the server run `docker-compose run -p 8080:8080 pin_system_northbound_api ./mvnw spring-boot:run`. To exit the server, enter 'CTRL + C'.
-To start the server with debbug mode run 
+### Run the tests
+To run the tests, use
 ```shell
-docker-compose run -p 8080:8080 pin_system_northbound_api ./mvnw spring-boot:run -Drun.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8080"
+docker-compose run pin_system_northbound_api ./mvnw test -Dtest='ActivationTerminalControllerTest'
 ```
-### Requests to submit to the REST API
-You will find a file Insomnia_http_requests.json at the project's root. It is an Insomnia export contains the 3 requests to emit to 
-the REST API server to manually consume it. 
-The "create" request sends the [first request](#1-it-receives-the-body-customerid-12345-macaddress-aabbccddeeff).
-The "not found" request sends the [second request](#2-it-receives-the-body-customerid-12345-macaddress-aabbccddeeaa).
-The "conflict" request sends the [third request](#3-it-receives-the-body-customerid-11111-macaddress-aabbccddeeff).
-
-## How did I build it?
-
-1. I installed my developer environment (with docker)
-2. I created the project with https://start.spring.io/, uncompressed the folder and initialized it
-3. I installed the dependencies linter, main dependencies with `./mvnw clean install`
-4. I developed the first endpoint with no test just to check the installation is working and committed the code.
+You can run tests for the class `ActivationTerminalControllerTest` to test the controller with integration tests.
+For the moment the 3 integration tests fail with receiving a 400 code error. 
+I probably did not configure an abstract AbstractControllerTest
